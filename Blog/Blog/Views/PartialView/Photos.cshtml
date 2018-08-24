@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Blog.Models.RecArticlesView>
+<div class="wdxc">
+    <h2>我的相册</h2>
+    <ul id="photosList">
+        @{
+            foreach (var item in Model)
+            {
+                <li><a href="/Home/PhotoAlbumDetail/@item.Id"><img src="@item.MainPicUrl"></a></li>
+            }   
+        }
+    </ul>
+</div>
+<!--<script>
+    $.post("/Home/GetPhotosListTopApi", { count: 6 }, function (data, status) {
+        if (status == "success") {
+            var listHtml = "";
+            if (data.length > 0) {
+                for (var i = 0; i < data.length; i++) {
+                    listHtml += '<li><a href="/"><img src="' + data[i].MainPicUrl + '"></a></li>';
+                }
+                $("#photosList").html(listHtml);
+            }
+        }
+    });
+</script>-->

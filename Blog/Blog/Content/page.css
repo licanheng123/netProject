@@ -1,0 +1,14 @@
+.pro_list_more_pages {
+	text-align: center;
+}
+.pro_list_more_pages #pageul li {
+	list-style: none;
+	display: inline-block;
+	margin: 20px 6px 0;
+}
+.pro_list_more_pages #pageul a {
+	cursor: pointer;
+}
+.pro_list_more_pages .pro-list-current a {
+	color: #f4757b;
+}

@@ -1,0 +1,77 @@
+﻿@model Blog.Models.Photos
+@{
+    ViewBag.Title = "PhotosManageEdit";
+    Layout = "~/Views/Shared/_LayoutDiv.cshtml";
+}
+
+<div style="padding:5px 15px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>相册图片上传</legend>
+    </fieldset>
+    @using (Html.BeginForm("PhotosManageEdit", "Photos", FormMethod.Post, new { @class = "layui-form" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="Id" value="@Model.Id" />
+        <input type="hidden" name="BelongToArticles" value="@Model.BelongToArticles" />
+        <div class="layui-upload">
+            <label class="layui-form-label">相册图片</label>
+            <input type="text" name="PicUrl" style="display:none" lay-verify="required" placeholder="请上传图片" autocomplete="off" class="layui-input" value="@Model.PicUrl"  />
+            <div class="layui-upload-list">
+                <img id="demo1" src="@Model.PicUrl" class="layui-upload-img" style="width:320px; height:213px"  />
+                <p id="demoText"></p>
+            </div>
+            <button type="button" id="uploadImg" class="layui-btn" style="margin-left:110px;margin-bottom:10px;" >上传图片</button>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">图片内容</label>
+            <div class="layui-input-block">
+                <textarea name="Cont" placeholder="请输入图片内容" lay-verify="required" class="layui-textarea" >@Model.Cont</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit="" lay-filter="add">立即提交</button>
+            </div>
+        </div>
+    }
+</div>
+<script>
+    layui.use(['element', 'form', 'upload'], function () {
+        var element = layui.element;
+        var form = layui.form;
+        //监听提交
+        form.on('submit(add)', function (data) {
+            parent.location.reload();
+            parent.layer.close(index);
+        });
+        var $ = layui.jquery
+        , upload = layui.upload;
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#uploadImg'
+          , url: '/Upload/UploadImage'
+          , before: function (obj) {
+              //预读本地文件示例，不支持ie8
+              obj.preview(function (index, file, result) {
+                  $('#demo1').attr('src', result); //图片链接（base64）
+              });
+          }
+          , done: function (res) {
+              //如果上传失败
+              if (res.code > 0) {
+                  return layer.msg(ret.msg);
+              }
+              //上传成功
+              $("input[name='PicUrl']").val(res.data.src);
+          }
+          , error: function () {
+              //演示失败状态，并实现重传
+              var demoText = $('#demoText');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+              demoText.find('.demo-reload').on('click', function () {
+                  uploadInst.upload();
+              });
+          }
+        });
+    });
+</script>

@@ -1,0 +1,18 @@
+﻿@model Blog.Models.User
+<div class="about_me">
+    <h2>关于我</h2>
+    <ul>
+        <i><img src="@Model.SelfPhoto" /></i>
+        <p id="selfSlogo"><b>杨青</b>@Model.SelfSlogo</p>
+    </ul>
+</div>
+<!--<script>
+    $.post("/Home/GetMyMessageApi", {}, function (data, status) {
+        if (status == "success") {
+            if (data != null) {
+                $("#selfPhoto").attr("src", data.SelfPhoto);
+                $("#selfSlogo").html("<b>杨青</b>，" + data.SelfSlogo);
+            }
+        }
+    });
+</script>-->

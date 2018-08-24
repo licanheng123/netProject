@@ -1,0 +1,86 @@
+﻿@{
+    ViewBag.Title = "ResArticlesIndex";
+}
+
+<div style="padding:5px 15px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>推荐信息</legend>
+    </fieldset>
+    <div class="demoTable">      
+        <!--@using (Html.BeginForm())
+            {
+            @Html.AntiForgeryToken()           
+            <span>关键字：</span>
+            <div class="layui-inline">
+                <input class="layui-input" name="searchKey" id="demoReload" autocomplete="off" value="@ViewBag.searchKey">
+            </div>
+            <button type="submit" class="layui-btn" data-type="reload">搜索</button>}-->
+    </div>
+    <table id="demo" class="layui-table" lay-filter="demo">
+
+    </table>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+</div>
+<script>
+    layui.use(['element', 'table', 'form'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var $ = layui.$;
+        //第一个实例
+        var tableIns = table.render({
+            elem: '#demo'
+              , height: 400
+              , url: '/RecArticles/RecArticlesList'
+              , page: true//开启分页
+              , cols: [[ //表头
+                  { field: 'Title', title: '标题'}
+                , { field: 'ShowType', title: '类型', width: 90 }
+                , {
+                    field: 'PosId', title: '位置', width: 160, templet: function (d) {
+                        var pos = "";
+                        if (d.PosId == 1) {
+                            pos = "首页";
+                        } else if (d.PosId == 2) {
+                            pos = "我的日记";
+                        } else if (d.PosId == 3) {
+                            pos = "关于我";
+                        } else if (d.PosId == 4) {
+                            pos = "留言";
+                        }
+                        return pos;
+                    }
+                }
+                , { field: 'Weight', title: '权重', width: 90 }
+                , { field: 'right', align: 'center', toolbar: '#barDemo' }
+              ]]
+        });
+        //监听工具条
+        table.on('tool(demo)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                    $.post("/RecArticles/RecArticlesDelete", { id: data.RecId }, function (data, status) {
+                        layer.msg(data, {
+                            icon: 1,
+                            time: 2000
+                        });
+                    });
+                });
+            } else if (obj.event === 'edit') {
+                layer.open({
+                    type: 2,
+                    area: ['840px', '540px'],
+                    fixed: false,
+                    maxmin: true,
+                    content: '/RecArticles/RecArticlesEdit?id=' + data.RecId
+                });
+            }
+        });
+    });
+</script>

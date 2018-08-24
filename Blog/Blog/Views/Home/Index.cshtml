@@ -1,0 +1,78 @@
+﻿@model IEnumerable<Blog.Models.Articles>
+@{
+    ViewBag.Title = "主页";
+}
+<aside>
+    <div class="l_box" id="stickMe">
+        @Html.Action("AboutMe", new { controller = "PartialView" })
+        @Html.Action("Photos", new { controller = "PartialView",posId = 1})
+        @Html.Partial("~/Views/Shared/_PartialSearch.cshtml")
+        @Html.Action("ArticlesType", new { controller = "PartialView" })
+        @Html.Action("Commend", new { controller = "PartialView",posId = 1})
+        @Html.Partial("~/Views/Shared/_PartialLinks.cshtml")
+        @Html.Partial("~/Views/Shared/_PartialAttentionMe.cshtml")
+    </div>
+</aside>
+
+<div class="r_box">
+    <main id="articleList">
+    @{
+        foreach (var item in Model)
+        {
+            <li>
+                <i><a href="javascript:openDetail(@item.Id,'@item.ShowType')"><img src="@item.MainPicUrl"></a></i>
+                <h3><a href="javascript:openDetail(@item.Id,'@item.ShowType')">@item.Title</a></h3>
+                <p>@item.SimpleInfo</p>
+            </li>
+        }
+    }
+    </main>
+</div>
+<script>
+    function openDetail(id, showType) {
+        if (showType == "文章") {
+            window.location.href = "/Home/ArticleDetail/" + id;
+        }
+        if (showType == "相册") {
+            window.location.href = "/Home/PhotoAlbumDetail/" + id;
+        }
+    }
+</script>
+<!--<script>
+    $(function () {
+        $.post("/Home/GetMyMessageApi", {}, function (data, status) {
+            if (status == "success") {
+                if (data != null) {
+                    $("#selfPhoto").attr("src", data.SelfPhoto);
+                    $("#selfSlogo").html("<b>杨青</b>，" + data.SelfSlogo);
+                }
+            }
+        });
+        $.post("/Home/GetPhotosListTopApi", { count: 6 }, function (data, status) {
+            if (status == "success") {
+                var listHtml = "";
+                if (data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        listHtml += '<li><a href="/"><img src="' + data[i].MainPicUrl + '"></a></li>';
+                    }
+                    $("#photosList").html(listHtml);
+                }
+            }
+        });
+        $.post("/Home/GetAticlesListTopApi", { count: 20 }, function (data, status) {
+            if (status == "success") {
+                var listHtml = "";
+                if (data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        listHtml += '<li><i><a href="/">';
+                        listHtml += '    <img src="' + data[i].MainPicUrl + '"></a></i>';
+                        listHtml += '    <h3><a href="/">' + data[i].Title + '</a></h3>';
+                        listHtml += '    <p>' + data[i].SimpleInfo + '</p>';
+                        listHtml += '</li>';
+                    }
+                    $("#articleList").html(listHtml);
+                }
+            }
+        });
+    });
+</script>-->

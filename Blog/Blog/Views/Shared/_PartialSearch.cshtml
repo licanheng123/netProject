@@ -1,0 +1,7 @@
+﻿<div class="search">
+    <form action="/Home/Article" method="post" name="searchform" id="searchform">
+        @Html.AntiForgeryToken()
+        <input name="title" id="keyboard" class="input_text" value="请输入关键字词" style="color: rgb(153, 153, 153);" onfocus="if(value=='请输入关键字词'){this.style.color='#000';value=''}" onblur="if(value==''){this.style.color='#999';value='请输入关键字词'}" type="text">
+        <input name="Submit" class="input_submit" value="搜索" type="submit">
+    </form>
+</div>

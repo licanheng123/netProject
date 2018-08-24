@@ -1,0 +1,48 @@
+﻿@model IEnumerable<Blog.Models.Articles>
+@{
+    ViewBag.Title = "我的日记";
+}
+<aside>
+    <div class="l_box">
+        @Html.Partial("~/Views/Shared/_PartialSearch.cshtml")
+        @Html.Action("ArticlesType", new { controller = "PartialView" })
+        @Html.Action("Commend", new { controller = "PartialView",posId = 2 })
+        @Html.Action("TagsCloud", new { controller = "PartialView" })
+        @Html.Partial("~/Views/Shared/_PartialAttentionMe.cshtml")
+    </div>
+</aside>
+<div class="r_box">
+    <main id="ArticleList">
+        @foreach (var item in Model)
+        {
+            <li><i><a href="/Home/ArticleDetail/@item.Id"><img src="@item.MainPicUrl"></a></i>
+            <h3><a href="/Home/ArticleDetail/@item.Id">@item.Title</a></h3>
+            <p>@item.SimpleInfo</p></li>
+        }
+        <div class='pro_list_more_pages'>
+            <ul id="pageul">
+            </ul>
+       </div>
+    </main>
+</div>
+<script type="text/javascript" src="~/Scripts/page1.js"></script>
+<script>
+    var pageCount = '@ViewBag.Count';
+    var search = '@ViewBag.Search';
+    var type = '@ViewBag.Type';
+    var tags = '@ViewBag.Tags';
+    var currentPage = '@ViewBag.CurrentPage';
+    $(function () {
+        getList(currentPage);
+    });
+    function getList(page) {
+        var pageObj = null;
+        pageObj = new PageCreate("#pageul", { pageCount: pageCount, currentPage: page });
+        pageObj.afterClick(pageCallBack);
+
+    }
+    function pageCallBack(clickPage) {
+        window.location.href = "/Home/Article?page=" + clickPage + "&limit=10&title=" +search +"&type=" +type +"&tags=" +tags +"";
+    }
+</script>
+

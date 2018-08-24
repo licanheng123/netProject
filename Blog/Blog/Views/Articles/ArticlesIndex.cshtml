@@ -1,0 +1,150 @@
+﻿@{
+    ViewBag.Title = "ArticlesIndex";
+}
+
+<div style="padding: 5px 15px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>文章信息</legend>
+    </fieldset>
+    <div class="demoTable">
+        <button class="layui-btn" style="margin-right: 10px; float: left;" data-type="AddData">新增文章信息</button>
+        <button class="layui-btn" style="margin-right: 30px; float: left;" data-type="Pub">发布</button>
+        <form action="/" method="post" class="layui-form" style="float:left;">      
+            <span>标题：</span>
+            <div class="layui-inline">
+                <input class="layui-input" name="title" autocomplete="off" value="@ViewBag.searchKey">
+            </div>
+            <span style="margin-left:10px;">类别：</span>
+            <div class="layui-inline">
+                @Html.DropDownList("type", ViewBag.TypeList as IEnumerable<SelectListItem>, "全部")
+            </div>
+       </form>
+       <button class="layui-btn" style="margin-left:30px;float:left;" data-type="ReloadData">搜索</button>
+    </div>
+    <table id="demo" class="layui-table" lay-filter="demo">
+    </table>
+    <script type="text/html" id="checkboxTpl">
+        <input type="checkbox" name="lock" value="{{d.Id}}" title="发布" lay-filter="lockDemo" {{ d.IsPub == "是" ? 'checked' : '' }}>
+    </script>
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="rec">推荐</a>
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+</div>
+<script>
+    layui.use(['element', 'table', 'form', 'layer'], function () {
+        var element = layui.element;
+        var table = layui.table;
+        var form = layui.form;
+        var layer = layui.layer;
+        //第一个实例
+        var tableIns = table.render({
+            elem: '#demo'
+          , height: 400
+          , url: '/Articles/ArticlesList'
+          , page: true//开启分页
+          , cols: [[ //表头
+              { type: 'checkbox' }
+            , { field: 'Title', title: '标题', width: 120 }
+            , { field: 'ReadTimes', title: '阅读次数', width: 90 }
+            , { field: 'Tags', title: '标签', width: 100 }
+            //, { field: 'SimpleInfo', title: '简介', width: 100 }
+            //, { field: 'Cont', title: '内容', width: 100 }
+            , { field: 'Source', title: '来源', width: 80 }
+            , { field: 'Type', title: '类别', width: 100 }
+            , { field: 'CreateTime', title: '创建时间', width: 160 }
+            , { field: 'IsPub', title: '是否发布',templet: '#checkboxTpl', width: 90 }
+            , { field: 'PubTime', title: '发布时间', width: 160 }
+            , { field: 'right', align: 'center', toolbar: '#barDemo' }
+          ]]
+        });
+        //监听工具条
+        table.on('tool(demo)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'rec') { //推荐
+                layer.open({
+                    type: 2,
+                    area: ['700px', '450px'],
+                    fixed: false,
+                    maxmin: true,
+                    content: '/RecArticles/RecArticlesAdd/' + data.Id
+                });
+            } else if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                    $.post("/Articles/ArticlesDelete", { id: data.Id }, function (data, status) {
+                        layer.msg(data, {
+                            icon: 1,
+                            time: 2000
+                        });
+                    });
+                });
+            } else if (obj.event === 'edit') {
+                layer.open({
+                    type: 2,
+                    area: ['840px', '540px'],
+                    fixed: false,
+                    maxmin: true,
+                    content: '/Articles/ArticlesEdit?id=' + data.Id
+                });
+            }
+        });
+        var $ = layui.$, active = {
+            AddData: function () { //添加文章
+                window.location.href = "/Articles/ArticlesAdd";
+            }, Pub: function () { //发布文章
+                var checkStatus = table.checkStatus('demo')
+                , data = checkStatus.data;
+                if (data.length < 1) {
+                    layer.msg('请选择要发布的文章');
+                    return;
+                }
+                var ids = "";
+                for (var i = 0; i < data.length; i++) {
+                    if (data[i].IsPub != "是") {
+                        ids += data[i].Id + ",";
+                    }
+                }
+                layer.confirm('确定发布么', function (index) {
+                    layer.close(index);
+                    $.post("/Articles/ArticlesPubMultiple", { ids: ids }, function (data, status) {
+                        layer.msg(data, {
+                            icon: 1,
+                            time: 2000
+                        });
+                        tableIns.reload();
+                    });
+                });
+            }, ReloadData: function () { //表格数据重新加载
+                var title_val = $("input[name='title']").val();
+                var type_val = $("select[name='type']").val();
+                //这里以搜索为例
+                tableIns.reload({
+                    where: { //设定异步数据接口的额外参数，任意设
+                        title: title_val
+                      , type: type_val
+                    }
+                  , page: {
+                      curr: 1 //重新从第 1 页开始
+                  }
+                });
+            }
+        };
+        $('.demoTable .layui-btn').on('click', function () {
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        //监听锁定操作
+        form.on('checkbox(lockDemo)', function (obj) {
+            $.post("/Articles/ArticlesPub", { id: this.value, flag: obj.elem.checked }, function (data, status) {
+                layer.msg(data, {
+                    icon: 1,
+                    time: 2000
+                });
+            });
+        });
+    });
+</script>
+

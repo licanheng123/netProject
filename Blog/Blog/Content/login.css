@@ -1,0 +1,44 @@
+﻿body {
+    background-color:#27AE60;
+}
+.logintop {
+    background-color:#fff;
+    padding:15px 15px;
+}
+    .logintop span {
+        font-size:16px;
+    }
+    .logintop a {
+        font-size:16px;
+        float:right;
+        color:#ff6a00;
+    }
+.logincontent {
+    margin-top:150px;
+    text-align:center;
+}
+.content {
+    width:350px;
+}
+.title {
+    font-size:32px;
+    color:#fff;
+}
+.content-input {
+    margin-top:30px;
+}
+    .content-input label {
+        float:left;
+        color:#fff;
+        font-size:18px;
+        margin:10px 0px;
+    }
+.content-btn {
+    margin-top:30px;
+}
+    .content-btn button {
+        margin-right:40px;
+    }
+    .content-btn span {
+        display:inline-block;
+    }

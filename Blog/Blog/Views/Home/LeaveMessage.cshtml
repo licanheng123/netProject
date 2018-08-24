@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "留言";
+}
+
+ <aside>
+  <div class="l_box">
+      @Html.Action("AboutMe", new { controller = "PartialView" })
+      @Html.Action("Photos", new { controller = "PartialView",posId = 4 })
+      @Html.Partial("~/Views/Shared/_PartialAttentionMe.cshtml")
+  </div>
+  </aside>
+  <div class="r_box">
+<main>
+     <ul class="about">
+     留言插件安装
+  
+     </ul>
+</main>
+  </div>

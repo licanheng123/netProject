@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Blog.Models.Articles>
+@{
+    ViewBag.Title = "Album";
+}
+
+<div id="photosList" class="picbox">
+    @{
+        foreach (var item in Model)
+        {
+            <ul>
+                <li data-scroll-reveal="enter bottom over 1s"><a href="/Home/PhotoAlbumDetail/@item.Id"><i>
+                         <img src="@item.MainPicUrl"></i>
+                         <div class="picinfo">
+                             <h3 style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">@item.Title</h3>
+                             <span>@item.SimpleInfo</span>
+                         </div>
+                     </a>
+                 </li>
+            </ul>
+        } 
+    }
+</div>
+<div class='pro_list_more_pages'>
+    <ul id="pageul">
+    </ul>
+</div>
+
+<script type="text/javascript" src="~/Scripts/page1.js"></script>
+<script type="text/javascript" src="~/Scripts/scrollReveal.js"></script>
+<script>
+    if (!(/msie [6|7|8|9]/i.test(navigator.userAgent))) {
+        (function () {
+            window.scrollReveal = new scrollReveal({ reset: true });
+        })();
+    };
+    var pageCount = '@ViewBag.Count';
+    $(function () {
+        getList(1);
+    });
+    function getList(page) {
+        var pageObj = null;
+        pageObj = new PageCreate("#pageul", { pageCount: pageCount, currentPage: page });
+        pageObj.afterClick(pageCallBack);
+
+    }
+    function pageCallBack(clickPage) {
+        window.location.href = "/Home/PhotoAlbum?page=" + page + "&pageSize=8";
+        getList(clickPage);
+    }
+</script>

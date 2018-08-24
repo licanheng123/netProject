@@ -1,0 +1,95 @@
+﻿@model Blog.Models.User
+@{
+    ViewBag.Title = "Message";
+}
+
+<!-- 内容主体区域 -->
+<div style="padding:5px 15px;">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>基本资料</legend>
+    </fieldset>
+
+    <form class="layui-form" action="/Admin/Message" method="post">
+        @Html.AntiForgeryToken()
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="UserName" readonly="readonly" autocomplete="off" placeholder="请输入用户名" class="layui-input" style="color:#d7d3d3" value="@Model.UserName" />
+            </div>
+        </div>
+        <div class="layui-upload">
+            <label class="layui-form-label">我的图片</label>
+            <input type="text" id="imgurl" name="SelfPhoto" style="display:none" lay-verify="required" placeholder="请上传图片" autocomplete="off" class="layui-input" value="@Model.SelfPhoto" />
+            <div class="layui-upload-list">
+                <img id="demo1" src="@Model.SelfPhoto" class="layui-upload-img" style="width:320px; height:213px"  />
+                <p id="demoText"></p>
+            </div>
+            <button type="button" id="uploadImg" class="layui-btn" style="margin-left:110px;margin-bottom:10px;" >上传图片</button>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">我的简介</label>
+            <div class="layui-input-block">
+                <textarea name="SelfSLogo" placeholder="请输入我的简介" lay-verify="required" class="layui-textarea" >@Model.SelfSlogo</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">关于我</label>
+            <div class="layui-input-block">
+                <textarea id="aboutMe" name="AboutMe" lay-verify="required" style="display:none;">@Model.AboutMe</textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button type="submit" class="layui-btn" lay-submit="">立即提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    //JavaScript代码区域
+    layui.use(['form', 'element', 'layedit', 'upload'], function () {
+        var element = layui.element;
+        var form = layui.form;
+        var layedit = layui.layedit;
+        layedit.set({
+            uploadImage: {
+                url: '/Upload/UploadImage' //接口url
+            }
+        });
+        layedit.build('aboutMe'); //建立编辑器
+        var $ = layui.jquery
+        , upload = layui.upload;
+        //普通图片上传
+        var uploadInst = upload.render({
+            elem: '#uploadImg'
+          , url: '/Upload/UploadImage'
+          , before: function (obj) {
+              //预读本地文件示例，不支持ie8
+              obj.preview(function (index, file, result) {
+                  $('#demo1').attr('src', result); //图片链接（base64）
+              });
+          }
+          , done: function (res) {
+              //如果上传失败
+              if (res.code > 0) {
+                  return layer.msg(ret.msg);
+              }
+              //上传成功
+              $("#imgurl").val(res.data.src);
+          }
+          , error: function () {
+              //演示失败状态，并实现重传
+              var demoText = $('#demoText');
+              demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-mini demo-reload">重试</a>');
+              demoText.find('.demo-reload').on('click', function () {
+                  uploadInst.upload();
+              });
+          }
+        });
+        var warnMsg = '@ViewBag.WarnMsg';
+        if (warnMsg != '') {
+            layer.msg(warnMsg);
+        }
+    });
+</script>
+

@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>博客后台管理系统</title>
+    <link href="~/OpenSource/layui/css/layui.css" rel="stylesheet" />
+    <link href="~/Content/template.css" rel="stylesheet" />
+    <script src="~/OpenSource/layui/layui.js"></script>
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">博客后台管理系统</div>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img src="~/Images/photo.jpg" class="layui-nav-img">
+                         @Html.Raw(User.Identity.Name)
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="/Admin/Message">基本资料</a></dd>
+                        <dd><a href="/Admin/Password">安全设置</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="/Admin/LogOff">退出</a></li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="test">
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="/Articles/ArticlesIndex">文章管理</a>
+                    </li>
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="/Photos/PhotosIndex">相册管理</a>
+                    </li>
+                    <li class="layui-nav-item layui-nav-itemed">
+                        <a href="/RecArticles/RecArticlesIndex">推荐管理</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            @RenderBody()
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            技术支持
+        </div>
+    </div>
+</body>
+</html>
